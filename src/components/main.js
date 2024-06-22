@@ -1,12 +1,9 @@
 import React, { Component } from "react";
+import Form from "./Form";
+import Tarefas from "./Tarefas";
+import Titulo from './Titulo'
 import './main.css'
 
-//form
-import { FaPlus } from 'react-icons/fa'
-
-//tarefas
-import {FaEdit, FaWindowClose} from 'react-icons/fa'
-//importando react
 
 //exportando uma classe que extende de react.component
 export default class Main extends Component{
@@ -62,7 +59,7 @@ export default class Main extends Component{
     }
   }
 
-   handleChance = (e) => {
+   handleChange = (e) => {
     this.setState({
       novaTarefa: e.target.value,//pega oq ta sendo digitado no campo e renderiza dnv
     })
@@ -93,33 +90,19 @@ export default class Main extends Component{
     return (
 
       <div className="main">
-        <h1>{"Lista de Tarefas"}</h1>
 
-        <form onSubmit={this.handleSubmit} action="#" className="form">
-          <input onChange={this.handleChance} type="text" value={novaTarefa}/>
-          <button type="submit">
-            <FaPlus/>
-          </button>
-        </form>
+        <Titulo/>
 
-        <ul className="tarefas">
-          {tarefas.map((tarefa, index) => (
-            <li key={tarefa}>
-              {tarefa}
-              <div>
-                <FaEdit
-                className="edit"
-                onClick={(e) => this.handleEdit(e, index)}
-                />
-
-                <FaWindowClose
-                className="delete"
-                onClick={(e) => this.handleDelete(e, index)}
-                />
-              </div>
-            </li>
-          ))}
-        </ul>
+        <Form
+            handleChange = {this.handleChange}
+            handleSubmit = {this.handleSubmit}
+            novaTarefa = {novaTarefa}
+        />
+        <Tarefas
+            tarefas = {tarefas}
+            handleDelete = {this.handleDelete}
+            handleEdit = {this.handleEdit}
+        />
       </div>
     )
   }
