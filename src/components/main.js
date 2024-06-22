@@ -1,11 +1,12 @@
 import React, { Component } from "react";
+
+import Form from './Form'
+import Tarefas from './Tarefas'
+
 import './main.css'
 
-//form
-import { FaPlus } from 'react-icons/fa'
 
 //tarefas
-import {FaEdit, FaWindowClose} from 'react-icons/fa'
 //importando react
 
 //exportando uma classe que extende de react.component
@@ -17,8 +18,25 @@ export default class Main extends Component{
     index: -1,
   };
 
+  componentDidMount(){
+    const tarefas = JSON.parse(localStorage.getItem('tarefas'))
 
-  hendleSubmit = (e) =>{
+    if(!tarefas)return;
+    this.setState({
+        tarefas
+    })
+  }
+
+  componentDidUpdate(prevProps, PrevState){
+    const {tarefas} = this.state;
+
+    if(tarefas === PrevState.tarefas) return
+
+    localStorage.setItem('tarefas', JSON.stringify(tarefas))
+  }
+
+
+  handleSubmit = (e) =>{
     e.preventDefault();//previnindo que a pagina atualize ao enviar
     let { tarefas, index} = this.state//pegando o array [] do state
     let{ novaTarefa } = this.state;
@@ -36,15 +54,15 @@ export default class Main extends Component{
       })
     }else{
       novasTarefas[index] = novaTarefa
-
       this.setState({
         tarefas: [...novasTarefas],
-        index: -1
+        index: -1,
+        novaTarefa: '',
       })
     }
   }
 
-   handleChance = (e) => {
+   handleChange = (e) => {
     this.setState({
       novaTarefa: e.target.value,//pega oq ta sendo digitado no campo e renderiza dnv
     })
@@ -77,31 +95,18 @@ export default class Main extends Component{
       <div className="main">
         <h1>{"Lista de Tarefas"}</h1>
 
-        <form onSubmit={this.hendleSubmit} action="#" className="form">
-          <input onChange={this.handleChance} type="text" value={novaTarefa}/>
-          <button type="submit">
-            <FaPlus/>
-          </button>
-        </form>
+        <Form 
+        handleSubmit={this.handleSubmit} 
+        handleChange = {this.handleChange}
+        novaTarefa = {novaTarefa}
+        />
 
-        <ul className="tarefas">
-          {tarefas.map((tarefa, index) => (
-            <li key={tarefa}>
-              {tarefa}
-              <div>
-                <FaEdit
-                className="edit"
-                onClick={(e) => this.handleEdit(e, index)}
-                />
+        <Tarefas
+        tarefas = {tarefas}
+        handleEdit = {this.handleEdit}
+        handleSubmit = {this.handleSubmit}
+        />
 
-                <FaWindowClose
-                className="delete"
-                onClick={(e) => this.handleDelete(e, index)}
-                />
-              </div>
-            </li>
-          ))}
-        </ul>
       </div>
     )
   }
