@@ -18,23 +18,25 @@ export default class Main extends Component{
   };
 
   componentDidMount(){
-    const {tarefas} = JSON.parse(localStorage.getItem('tarefas'))
+    let tarefas;
+    const storageData = localStorage.getItem('Tarefas')
+    
+    storageData.length > 1 ? tarefas = JSON.parse(storageData) : tarefas = []
 
-    if(!tarefas) return;
-
-    this.setState({tarefas})
+    this.setState({
+        tarefas:tarefas
+    })
   }
 
-  componentDidUpdate(prevProps, prevState){
-    const {tarefas} = this.state.tarefas
+  componentDidUpdate(prevProps, prevState) {
+    const { tarefas } = this.state;
 
-    if(tarefas === prevState.tarefas) return;
+    if (tarefas.length !== prevState.tarefas.length) {
+      localStorage.setItem('Tarefas', JSON.stringify(tarefas));
+    }
+} 
 
-    localStorage.setItem('tarefas', JSON.stringify(tarefas))
-  } 
-
-
-  hendleSubmit = (e) =>{
+  handleSubmit = (e) =>{
     e.preventDefault();//previnindo que a pagina atualize ao enviar
     let { tarefas, index} = this.state//pegando o array [] do state
     let{ novaTarefa } = this.state;
@@ -93,7 +95,7 @@ export default class Main extends Component{
       <div className="main">
         <h1>{"Lista de Tarefas"}</h1>
 
-        <form onSubmit={this.hendleSubmit} action="#" className="form">
+        <form onSubmit={this.handleSubmit} action="#" className="form">
           <input onChange={this.handleChance} type="text" value={novaTarefa}/>
           <button type="submit">
             <FaPlus/>
